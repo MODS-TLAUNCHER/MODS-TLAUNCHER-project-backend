@@ -1,2 +1,2 @@
-from ..module.role.model import Role
-from ..module.user.model import User
+from app.modules.role.model import Role
+from app.modules.user.model import User
