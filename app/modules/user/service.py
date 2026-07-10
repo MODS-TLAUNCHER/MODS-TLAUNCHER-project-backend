@@ -57,7 +57,7 @@ class UserService:
             alternative_email=user_data.alternative_email,
             password_hash=hash_password(
                 user_data.password
-            ),
+            )if user_data.password else None,
             career=user_data.career,
             credits=user_data.credits,
             goal=user_data.goal,

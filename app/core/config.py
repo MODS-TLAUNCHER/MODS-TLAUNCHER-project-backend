@@ -9,8 +9,19 @@ class Settings(BaseSettings):
     DB_PORT: int
     DB_NAME: str
 
+    GOOGLE_CLIENT_ID: str
+    ALLOWED_EMAIL_DOMAINS: str = "unal.edu.co"
+    JWT_SECRET_KEY: str
+    JWT_ALGORITHM: str = "HS256"
+    minutesinaday=60*24
+    JWT_EXPIRE_MINUTES: int = minutesinaday
+
+
     class Config:
         env_file = ".env"
 
+    @property
+    def allowed_domains_list(self) -> list[str]:
+        return [d.strip().lower() for d in self.ALLOWED_EMAIL_DOMAINS.split(",") if d.strip()]
 
 settings = Settings()

@@ -15,11 +15,12 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    password: str
+    password: str | None=Field(default=None,min_length=8)
 
 
 class UserResponse(UserBase):
     id: int
+    is_verified:bool
     model_config = ConfigDict(from_attributes=True)
 
 class UserUpdate(BaseModel):

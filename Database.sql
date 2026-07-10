@@ -14,6 +14,8 @@ CREATE TABLE usuario (
     correo_institucional VARCHAR(150) UNIQUE NOT NULL,
     correo_alternativo VARCHAR(150),
     password_hash VARCHAR(255) NOT NULL,
+    google_id VARCHAR(255) UNIQUE,
+    correo_verificado BOOLEAN DEFAULT FALSE,
     carrera VARCHAR(100),
     creditos INT DEFAULT 0,
     meta TEXT,

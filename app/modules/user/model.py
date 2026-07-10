@@ -29,6 +29,13 @@ class User(Base):
 
     alternative_email = Column("correo_alternativo",String(150))
     password_hash = Column(String(255),nullable=False)
+    google_sub = Column(
+        "google_id",
+        String(255),
+        unique=True,
+        nullable=True,
+        index=True)
+    is_verified = Column("correo_verificado",Boolean,default=False)
     carrer= Column("carrera",String(100))
     credits = Column("creditos",Integer,default=0)
     goal = Column("meta",Text)
