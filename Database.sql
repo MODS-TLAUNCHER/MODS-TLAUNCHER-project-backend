@@ -56,13 +56,16 @@ CREATE TABLE registro_diario (
     usuario_id INT NOT NULL,
     fecha DATE NOT NULL,
     estado_animo VARCHAR(50),
-    comentario VARCHAR(255),
+    comentario VARCHAR(500),
     creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_registro_usuario
         FOREIGN KEY (usuario_id)
         REFERENCES usuario(id)
         ON DELETE CASCADE
+    
+    CONSTRAINT uq_registro_usuario_fecha
+        UNIQUE (usuario_id, fecha)
 );
 
 
