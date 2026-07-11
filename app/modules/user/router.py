@@ -27,9 +27,9 @@ def get_user(user_id: int,db: Session = Depends(get_db)):
         user_id
     )
 
-@router.get("/{institutional_email}",response_model=UserResponse)
+@router.get("/by-email/{institutional_email}",response_model=UserResponse)
 def get_user_by_email(institutional_email: str,db: Session = Depends(get_db)):
-    return UserService.get_by_id(
+    return UserService.get_by_institutional_email(
         db,
         institutional_email
     )

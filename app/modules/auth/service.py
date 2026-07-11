@@ -82,7 +82,7 @@ class AuthService:
             user.is_verified = True
             user = UserRepository.update(db, user)
 
-        profile_incomplete = not (user.carrer and user.goal)
+        profile_incomplete = not (user.career and user.goal)
 
         access_token = create_access_token(
             subject=str(user.id),

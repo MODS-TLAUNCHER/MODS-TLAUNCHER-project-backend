@@ -36,7 +36,7 @@ class User(Base):
         nullable=True,
         index=True)
     is_verified = Column("correo_verificado",Boolean,default=False)
-    carrer= Column("carrera",String(100))
+    career= Column("carrera",String(100))
     credits = Column("creditos",Integer,default=0)
     goal = Column("meta",Text)
     stress_level = Column("nivel_estres",Integer)
