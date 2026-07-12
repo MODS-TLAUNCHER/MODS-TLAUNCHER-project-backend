@@ -1,4 +1,4 @@
-from pydantic import BaseModel,ConfigDict,EmailStr,Field
+from pydantic import BaseModel,ConfigDict,EmailStr,Field,AliasPath
 
 
 class UserBase(BaseModel):
@@ -13,7 +13,6 @@ class UserBase(BaseModel):
     active: bool = True
     role_id: int
 
-
 class UserCreate(UserBase):
     password: str | None=Field(default=None,min_length=8)
 
@@ -21,6 +20,7 @@ class UserCreate(UserBase):
 class UserResponse(UserBase):
     id: int
     is_verified:bool
+    role_name: str | None = Field(default=None, validation_alias=AliasPath("role", "name"))
     model_config = ConfigDict(from_attributes=True)
 
 class UserUpdate(BaseModel):
