@@ -14,6 +14,6 @@ router = APIRouter(prefix="/auth", tags=["Auth"])
 def login_with_google(payload: GoogleLoginRequest,db: Session = Depends(get_db)):
     return AuthService.login_with_google(db, payload.id_token)
 
-@router.get("/user", response_model=UserResponse)
+@router.get("/me", response_model=UserResponse)
 def get_my_profile(current_user: User = Depends(get_current_user)):
     return current_user
