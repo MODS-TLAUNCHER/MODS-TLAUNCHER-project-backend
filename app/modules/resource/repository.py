@@ -1,36 +1,30 @@
 from sqlalchemy.orm import Session
-from app.modules.reminder.model import Reminder
+from app.modules.resource.model import Resource
 
-
-class ReminderRepository:
-
-    @staticmethod
-    def get_by_user(db: Session, user_id: int):
-        return (
-            db.query(Reminder)
-            .filter(Reminder.user_id == user_id)
-            .order_by(Reminder.time.asc())
-            .all()
-        )
+class ResourceRepository:
 
     @staticmethod
-    def get_by_id(db: Session, reminder_id: int):
-        return db.query(Reminder).filter(Reminder.id == reminder_id).first()
+    def get_all(db: Session):
+        return db.query(Resource).order_by(Resource.id.desc()).all()
 
     @staticmethod
-    def create(db: Session, reminder: Reminder) -> Reminder:
-        db.add(reminder)
+    def get_by_id(db: Session, resource_id: int):
+        return db.query(Resource).filter(Resource.id == resource_id).first()
+
+    @staticmethod
+    def create(db: Session, resource: Resource) -> Resource:
+        db.add(resource)
         db.commit()
-        db.refresh(reminder)
-        return reminder
+        db.refresh(resource)
+        return resource
 
     @staticmethod
-    def save(db: Session, reminder: Reminder) -> Reminder:
+    def save(db: Session, resource: Resource) -> Resource:
         db.commit()
-        db.refresh(reminder)
-        return reminder
+        db.refresh(resource)
+        return resource
 
     @staticmethod
-    def delete(db: Session, reminder: Reminder):
-        db.delete(reminder)
+    def delete(db: Session, resource: Resource):
+        db.delete(resource)
         db.commit()

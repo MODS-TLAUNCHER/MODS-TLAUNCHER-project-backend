@@ -1,16 +1,17 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Time
+from sqlalchemy import Column, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import relationship
 from app.database import Base
 
+class Resource(Base):
 
-class Reminder(Base):
-    __tablename__ = "recordatorio"
+    __tablename__ = "recurso_apoyo"
     __table_args__ = {"schema": "bienestar"}
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column("usuario_id", Integer, ForeignKey("bienestar.usuario.id", ondelete="CASCADE"), nullable=False)
-    time = Column("hora", Time, nullable=False)
-    message = Column("mensaje", String(255))
-    active = Column("activo", Boolean, default=True)
+    title = Column("titulo", String(150), nullable=False)
+    description = Column("descripcion", Text)
+    type = Column("tipo", String(50))  
+    url = Column("url", String(255))
+    created_by = Column("creado_por", Integer, ForeignKey("bienestar.usuario.id"))
 
-    user = relationship("User")
+    creator = relationship("User")

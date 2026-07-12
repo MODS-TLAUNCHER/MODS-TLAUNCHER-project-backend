@@ -1,21 +1,27 @@
-from datetime import time as time_type
+from enum import Enum
 from pydantic import BaseModel, ConfigDict, Field
 
+class ResourceType(str, Enum):
+    ARTICULO = "Articulo"
+    ENLACE = "Enlace"
 
-class ReminderCreate(BaseModel):
-    time: time_type
-    message: str | None = Field(default=None, max_length=255)
-    active: bool = True
+class ResourceCreate(BaseModel):
+    title: str = Field(max_length=150)
+    description: str | None = None
+    type: ResourceType
+    url: str | None = Field(default=None, max_length=255)
 
-class ReminderUpdate(BaseModel):
-    time: time_type | None = None
-    message: str | None = Field(default=None, max_length=255)
-    active: bool | None = None
+class ResourceUpdate(BaseModel):
+    title: str | None = Field(default=None, max_length=150)
+    description: str | None = None
+    type: ResourceType | None = None
+    url: str | None = Field(default=None, max_length=255)
 
-class ReminderResponse(BaseModel):
+class ResourceResponse(BaseModel):
     id: int
-    user_id: int
-    time: time_type
-    message: str | None = None
-    active: bool
+    title: str
+    description: str | None = None
+    type: str | None = None
+    url: str | None = None
+    created_by: int | None = None
     model_config = ConfigDict(from_attributes=True)

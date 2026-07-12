@@ -123,6 +123,7 @@ CREATE TABLE recordatorio (
 CREATE TABLE retroalimentacion (
     id SERIAL PRIMARY KEY,
     usuario_id INT NOT NULL,
+    categoria VARCHAR(50) NOT NULL,
     mensaje TEXT NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

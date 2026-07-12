@@ -1,42 +1,45 @@
 from fastapi import HTTPException
 from sqlalchemy.orm import Session
-from app.modules.reminder.model import Reminder
-from app.modules.reminder.repository import ReminderRepository
-from app.modules.reminder.schema import ReminderCreate, ReminderUpdate
+from app.modules.resource.model import Resource
+from app.modules.resource.repository import ResourceRepository
+from app.modules.resource.schema import ResourceCreate, ResourceUpdate
 
-
-class ReminderService:
-
-    @staticmethod
-    def get_mine(db: Session, user_id: int):
-        return ReminderRepository.get_by_user(db, user_id)
+class ResourceService:
 
     @staticmethod
-    def _get_owned_or_404(db: Session, user_id: int, reminder_id: int) -> Reminder:
-        reminder = ReminderRepository.get_by_id(db, reminder_id)
-        if reminder is None or reminder.user_id != user_id:
-            raise HTTPException(status_code=404, detail="Recordatorio no encontrado")
-        return reminder
+    def get_all(db: Session):
+        return ResourceRepository.get_all(db)
 
     @staticmethod
-    def create(db: Session, user_id: int, payload: ReminderCreate) -> Reminder:
-        reminder = Reminder(
-            user_id=user_id,
-            time=payload.time,
-            message=payload.message,
-            active=payload.active,
+    def get_by_id(db: Session, resource_id: int) -> Resource:
+        resource = ResourceRepository.get_by_id(db, resource_id)
+        if resource is None:
+            raise HTTPException(status_code=404, detail="Recurso no encontrado")
+        return resource
+
+    @staticmethod
+    def create(db: Session, admin_id: int, payload: ResourceCreate) -> Resource:
+        resource = Resource(
+            title=payload.title,
+            description=payload.description,
+            type=payload.type.value,
+            url=payload.url,
+            created_by=admin_id,
         )
-        return ReminderRepository.create(db, reminder)
+        return ResourceRepository.create(db, resource)
 
     @staticmethod
-    def update(db: Session, user_id: int, reminder_id: int, payload: ReminderUpdate) -> Reminder:
-        reminder = ReminderService._get_owned_or_404(db, user_id, reminder_id)
-        for field, value in payload.model_dump(exclude_unset=True).items():
-            setattr(reminder, field, value)
-        return ReminderRepository.save(db, reminder)
+    def update(db: Session, resource_id: int, payload: ResourceUpdate) -> Resource:
+        resource = ResourceService.get_by_id(db, resource_id)
+        data = payload.model_dump(exclude_unset=True)
+        if "type" in data and data["type"] is not None:
+            data["type"] = data["type"].value if hasattr(data["type"], "value") else data["type"]
+        for field, value in data.items():
+            setattr(resource, field, value)
+        return ResourceRepository.save(db, resource)
 
     @staticmethod
-    def delete(db: Session, user_id: int, reminder_id: int):
-        reminder = ReminderService._get_owned_or_404(db, user_id, reminder_id)
-        ReminderRepository.delete(db, reminder)
-        return {"message": "Recordatorio eliminado"}
+    def delete(db: Session, resource_id: int):
+        resource = ResourceService.get_by_id(db, resource_id)
+        ResourceRepository.delete(db, resource)
+        return {"message": "Recurso eliminado"}

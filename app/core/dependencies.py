@@ -15,9 +15,7 @@ def get_db():
     finally:
         db.close()
 
-
 _bearer_scheme = HTTPBearer(auto_error=True)
-
 
 def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(_bearer_scheme),
@@ -35,7 +33,6 @@ def get_current_user(
 
     return user
 
-
 def require_role(*allowed_role_ids: int):
     def _dependency(current_user: User = Depends(get_current_user)) -> User:
         if current_user.role_id not in allowed_role_ids:
@@ -43,3 +40,11 @@ def require_role(*allowed_role_ids: int):
         return current_user
 
     return _dependency
+
+ADMIN_ROLE_NAME = "Administrador"
+
+def require_admin(current_user: User = Depends(get_current_user)) -> User:
+    role_name = current_user.role.name if current_user.role else None
+    if role_name != ADMIN_ROLE_NAME:
+        raise HTTPException(status_code=403, detail="Esta acción requiere permisos de administrador")
+    return current_user
