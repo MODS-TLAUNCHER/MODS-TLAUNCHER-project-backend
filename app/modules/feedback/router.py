@@ -1,41 +1,31 @@
 from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
-from app.core.dependencies import get_current_user, get_db
-from app.modules.reminder.schema import ReminderCreate, ReminderResponse, ReminderUpdate
-from app.modules.reminder.service import ReminderService
+from app.core.dependencies import get_current_user, get_db, require_admin
+from app.modules.feedback.schema import FeedbackCreate, FeedbackResponse
+from app.modules.feedback.service import FeedbackService
 from app.modules.user.model import User
 
-router = APIRouter(prefix="/reminders", tags=["Reminders"])
+router = APIRouter(prefix="/feedback", tags=["Feedback"])
 
-@router.get("/me", response_model=List[ReminderResponse])
-def get_my_reminders(
+@router.post("/me", response_model=FeedbackResponse, status_code=201)
+def send_my_feedback(
+    payload: FeedbackCreate,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return ReminderService.get_mine(db, current_user.id)
+    return FeedbackService.create(db, current_user.id, payload)
 
-@router.post("/me", response_model=ReminderResponse, status_code=201)
-def create_my_reminder(
-    payload: ReminderCreate,
+@router.get("/me", response_model=List[FeedbackResponse])
+def get_my_feedback(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
-    return ReminderService.create(db, current_user.id, payload)
+    return FeedbackService.get_mine(db, current_user.id)
 
-@router.patch("/me/{reminder_id}", response_model=ReminderResponse)
-def update_my_reminder(
-    reminder_id: int,
-    payload: ReminderUpdate,
-    current_user: User = Depends(get_current_user),
+@router.get("", response_model=List[FeedbackResponse])
+def get_all_feedback(
+    admin: User = Depends(require_admin),
     db: Session = Depends(get_db),
 ):
-    return ReminderService.update(db, current_user.id, reminder_id, payload)
-
-@router.delete("/me/{reminder_id}")
-def delete_my_reminder(
-    reminder_id: int,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db),
-):
-    return ReminderService.delete(db, current_user.id, reminder_id)
+    return FeedbackService.get_all(db)

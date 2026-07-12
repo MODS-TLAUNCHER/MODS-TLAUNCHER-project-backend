@@ -1,21 +1,20 @@
-from datetime import time as time_type
+from datetime import datetime
+from enum import Enum
 from pydantic import BaseModel, ConfigDict, Field
 
+class FeedbackCategory(str, Enum):
+    SUGERENCIA = "Sugerencia"
+    REPORTE_ERROR = "Reporte de error"
+    OTRO = "Otro"
 
-class ReminderCreate(BaseModel):
-    time: time_type
-    message: str | None = Field(default=None, max_length=255)
-    active: bool = True
+class FeedbackCreate(BaseModel):
+    category: FeedbackCategory
+    message: str = Field(min_length=1, max_length=1000)
 
-class ReminderUpdate(BaseModel):
-    time: time_type | None = None
-    message: str | None = Field(default=None, max_length=255)
-    active: bool | None = None
-
-class ReminderResponse(BaseModel):
+class FeedbackResponse(BaseModel):
     id: int
     user_id: int
-    time: time_type
-    message: str | None = None
-    active: bool
+    category: str
+    message: str
+    created_at: datetime
     model_config = ConfigDict(from_attributes=True)
