@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>biUNestar - Prueba de login con Google</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body style="font-family: sans-serif; max-width: 640px; margin: 40px auto;">
+
+  <h2>Prueba de login con Google</h2>
+  <p>
+    1) Reemplaza <code>TU_GOOGLE_CLIENT_ID</code> abajo por el mismo valor que
+    pusiste en <code>.env</code> (GOOGLE_CLIENT_ID).<br />
+    2) Abre este archivo sirviéndolo con un servidor local (no como
+    <code>file://</code>), por ejemplo:
+    <code>python -m http.server 5500</code> y entra a
+    <code>http://localhost:5500/test_google_login.html</code>.<br />
+    3) En Google Cloud Console, agrega
+    <code>http://localhost:5500</code> a "Authorized JavaScript origins" de tu
+    OAuth Client ID.
+  </p>
+
+  <div id="g_id_onload"
+       data-client_id="929631091575-htpupscgl92ld1g8rt8r4kd79ggkebf9.apps.googleusercontent.com"
+       data-callback="handleCredentialResponse"
+       data-auto_select="false">
+  </div>
+  <div class="g_id_signin" data-type="standard"></div>
+
+  <p>
+    <button id="switchAccountBtn">Elegir otra cuenta de Google</button>
+  </p>
+
+  <h3>id_token obtenido:</h3>
+  <textarea id="tokenBox" rows="6" style="width: 100%;" readonly></textarea>
+
+  <h3>Respuesta de POST /auth/google:</h3>
+  <pre id="result" style="background:#f4f4f4; padding: 12px; white-space: pre-wrap;"></pre>
+
+  <script>
+    const API_BASE = "http://127.0.0.1:8000";
+
+    window.addEventListener("load", () => {
+      if (window.google && google.accounts && google.accounts.id) {
+        google.accounts.id.disableAutoSelect();
+      }
+    });
+
+    document.getElementById("switchAccountBtn").addEventListener("click", () => {
+      google.accounts.id.disableAutoSelect();
+      alert("Listo. Haz clic en el botón de Google otra vez y podrás elegir la cuenta.");
+    });
+
+    async function handleCredentialResponse(response) {
+      const idToken = response.credential;
+      document.getElementById("tokenBox").value = idToken;
+
+      const res = await fetch(`${API_BASE}/auth/google`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id_token: idToken })
+      });
+
+      const data = await res.json();
+      document.getElementById("result").textContent =
+        `HTTP ${res.status}\n` + JSON.stringify(data, null, 2);
+    }
+  </script>
+
+</body>
+</html>
