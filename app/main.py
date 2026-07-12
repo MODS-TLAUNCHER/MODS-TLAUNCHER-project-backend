@@ -10,6 +10,7 @@ from app.modules.auth.router import router as auth_router
 from app.modules.habit.router import router as habit_router
 from app.modules.daily_record.router import router as daily_record_router
 from app.modules.reminder.router import router as reminder_router
+from app.modules.report.router import router as report_router
 
 from app.modules.habit.service import HabitService
 
@@ -24,6 +25,7 @@ app.include_router(auth_router)
 app.include_router(habit_router)
 app.include_router(daily_record_router)
 app.include_router(reminder_router)
+app.include_router(report_router)
 
 @app.get("/")
 def start():

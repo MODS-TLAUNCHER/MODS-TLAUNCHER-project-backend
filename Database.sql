@@ -100,6 +100,9 @@ CREATE TABLE reporte (
         FOREIGN KEY (usuario_id)
         REFERENCES usuario(id)
         ON DELETE CASCADE
+
+    CONSTRAINT uq_reporte_usuario_semana_anio
+        UNIQUE (usuario_id, semana, anio)
 );
 
 
