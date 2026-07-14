@@ -1,9 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from app.database import SessionLocal
 from typing import List
+from app.core.dependencies import require_admin
 from app.modules.role.service import RoleService
 from app.modules.role.schema import RoleCreate
 from app.modules.role.schema import RoleResponse
+from app.modules.user.model import User
 
 router = APIRouter(
     prefix="/roles",
@@ -21,7 +23,6 @@ def list_roles():
     finally:
         db.close()
 
-
 @router.get("/{role_id}",response_model=RoleResponse)
 def get_role(rol_id: int):
 
@@ -33,9 +34,8 @@ def get_role(rol_id: int):
     finally:
         db.close()
 
-
 @router.post("")
-def create_role(rol: RoleCreate):
+def create_role(rol: RoleCreate,admin: User = Depends(require_admin)):
 
     db = SessionLocal()
 

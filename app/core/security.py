@@ -1,24 +1,18 @@
 from datetime import datetime, timedelta, timezone
+import bcrypt
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token as google_id_token
-from jose import JWTError, jwt
-from passlib.context import CryptContext
+from jose import jwt
 from app.core.config import settings
 
-pwd_context = CryptContext(
-    schemes=["bcrypt"],
-    deprecated="auto"
-)
+BCRYPT_ROUNDS = 12
 
-def hash_password(password: str):
-    return pwd_context.hash(password)
+def hash_password(password: str) -> str:
+    salt = bcrypt.gensalt(rounds=BCRYPT_ROUNDS)
+    return bcrypt.hashpw(password.encode("utf-8"), salt).decode("utf-8")
 
-
-def verify_password(plain_password: str,hashed_password: str):
-    return pwd_context.verify(
-        plain_password,
-        hashed_password
-    )
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return bcrypt.checkpw(plain_password.encode("utf-8"), hashed_password.encode("utf-8"))
 
 def verify_google_id_token(token: str) -> dict:
     payload = google_id_token.verify_oauth2_token(
