@@ -23,12 +23,20 @@ class UserRepository:
             .filter(User.institutional_email == email)
             .first()
         )
-    
+
     @staticmethod
     def get_by_google_sub(db: Session,google_sub: str):
         return (
             db.query(User)
             .filter(User.google_sub == google_sub)
+            .first()
+        )
+
+    @staticmethod
+    def get_by_alternative_email(db: Session,email: str):
+        return (
+            db.query(User)
+            .filter(User.alternative_email == email)
             .first()
         )
 
