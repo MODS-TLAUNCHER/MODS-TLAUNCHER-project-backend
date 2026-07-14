@@ -152,3 +152,9 @@ WHERE correo_institucional = 'tu_correo@unal.edu.co';
 ## Proyecto relacionado
 
 El front-end vive en una carpeta separada: [`biUNestar-frontend`](../biUNestar-frontend).
+# MODS-TLAUNCHER-project-backend
+## Ejecución rápida
+
+```bash
+chmod +x setup.sh
+./setup.sh
